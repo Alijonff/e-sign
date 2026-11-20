@@ -39,3 +39,82 @@ p[role='alert'] {
 p[role='alert'] {
   color: #a02038;
 }
+
+.signature-step {
+  display: grid;
+  gap: 1rem;
+}
+
+.signature-step > p {
+  margin: 0;
+}
+
+.signature-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.signature-actions button,
+.signature-actions a {
+  padding: 0.5rem 0.875rem;
+  border: 1px solid #c6d2e1;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.signature-actions .signature-primary {
+  border-color: #2253a3;
+  background: #2253a3;
+  color: #fff;
+}
+
+.signature-actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.mock-pad-dialog {
+  width: min(calc(100% - 2rem), 42rem);
+  max-height: calc(100% - 2rem);
+  padding: 1rem;
+  border: 1px solid #dce3ed;
+  border-radius: 1rem;
+  background: #fff;
+  color: inherit;
+}
+
+.mock-pad-dialog::backdrop {
+  background: rgb(24 38 59 / 48%);
+}
+
+.mock-pad-prompt {
+  margin: 0 0 1rem;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+.mock-pad-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+  outline: 1px solid #c6d2e1;
+  background: #fff;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.signed-file-preview {
+  display: block;
+  width: 100%;
+  height: 70vh;
+  border: 1px solid #dce3ed;
+  border-radius: 0.5rem;
+  background: #fff;
+}
