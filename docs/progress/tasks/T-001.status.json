@@ -1,0 +1,235 @@
+{
+  "task": "T-001",
+  "state": "done",
+  "summary": "Каркас Fastify и React реализован. Корневые проверки прошли на Node.js 22.23.4. Оба dev-сервера стартуют, собранный сервер отдаёт /health и веб-приложение, корректно обрабатывает SIGTERM. Переход на /login и ширина 360 px проверены в Chrome с подставленным ответом API. Рабочая копия готова к автокоммиту диспетчером: песочница запретила Git создать index.lock.",
+  "changed_files": [
+    {
+      "path": ".nvmrc",
+      "what": "Указана версия Node.js 22",
+      "why": "Единая версия для локальной разработки."
+    },
+    {
+      "path": "docs/progress/tasks/T-001.status.json",
+      "what": "Записаны итог T-001, список файлов, решения и проверки",
+      "why": "Вне карточки: обязательный файл для отчёта конвейера."
+    },
+    {
+      "path": "eslint.config.js",
+      "what": "Плоская конфигурация ESLint 9 для TypeScript и React Hooks",
+      "why": "Общий lint для рабочих пакетов."
+    },
+    {
+      "path": "package-lock.json",
+      "what": "Зафиксировано дерево npm-зависимостей",
+      "why": "Воспроизводимая установка через npm ci."
+    },
+    {
+      "path": "package.json",
+      "what": "Подключён workspace web, установлены инструменты lint и указано engines.node",
+      "why": "Корневые команды охватывают сервер, интерфейс и контракт."
+    },
+    {
+      "path": "server/package.json",
+      "what": "Добавлены Fastify, плагины, tsx, esbuild и команды запуска, сборки и lint",
+      "why": "Запуск исходного и собранного сервера и подготовка зависимостей для T-002."
+    },
+    {
+      "path": "server/src/app.ts",
+      "what": "Фабрика Fastify, /health, подключение маршрутов и статика со SPA fallback",
+      "why": "Собранные сервер и веб-приложение обслуживаются одним процессом."
+    },
+    {
+      "path": "server/src/config.ts",
+      "what": "Чтение и проверка окружения, значения по умолчанию и генерация секрета",
+      "why": "Единая серверная конфигурация для запуска и будущих маршрутов."
+    },
+    {
+      "path": "server/src/index.ts",
+      "what": "Запуск сервера с конфигурацией и закрытие по SIGTERM",
+      "why": "Управление жизненным циклом процесса."
+    },
+    {
+      "path": "server/src/routes/index.ts",
+      "what": "Пустая функция registerRoutes(app, config)",
+      "why": "Точка подключения маршрутов в T-002."
+    },
+    {
+      "path": "server/test/app.test.ts",
+      "what": "Проверка GET /health через app.inject",
+      "why": "Проверка HTTP-статуса и тела без запуска слушателя."
+    },
+    {
+      "path": "shared/package.json",
+      "what": "Добавлен скрипт lint",
+      "why": "Включение workspace shared в общую проверку стиля."
+    },
+    {
+      "path": "web/index.html",
+      "what": "Добавлен HTML-шаблон с русским языком и viewport",
+      "why": "Точка входа Vite и основа мобильной вёрстки."
+    },
+    {
+      "path": "web/package.json",
+      "what": "Создан манифест React 19, React Router 7, Vite, pdfjs-dist и тестовых инструментов",
+      "why": "Команды и зависимости веб-пакета."
+    },
+    {
+      "path": "web/src/App.test.tsx",
+      "what": "Проверены перенаправление, прямой вход и открытие документа",
+      "why": "Тестирование маршрутов с мокнутым fetch."
+    },
+    {
+      "path": "web/src/App.tsx",
+      "what": "Добавлены BrowserRouter, маршруты и проверка сеанса",
+      "why": "Защищённые экраны открываются после ответа API."
+    },
+    {
+      "path": "web/src/api.test.ts",
+      "what": "Проверены ApiError, ошибка без JSON, заголовки и ответ 204",
+      "why": "Проверка разбора ответов и параметров HTTP-клиента."
+    },
+    {
+      "path": "web/src/api.ts",
+      "what": "Добавлен типизированный HTTP-клиент и функции ссылок на PDF",
+      "why": "Один способ вызывать маршруты по общему контракту и обрабатывать HTTP-ошибки."
+    },
+    {
+      "path": "web/src/main.tsx",
+      "what": "Добавлена точка входа React",
+      "why": "Подключение App и общего CSS."
+    },
+    {
+      "path": "web/src/pad/index.test.ts",
+      "what": "Проверены выбор драйвера, приоритеты и ошибка заглушки",
+      "why": "Проверка параметров адреса, переменной окружения и значения по умолчанию."
+    },
+    {
+      "path": "web/src/pad/index.ts",
+      "what": "Добавлены фабрика и выбор драйвера по URL и env",
+      "why": "Единая точка выбора реализации PadDriver."
+    },
+    {
+      "path": "web/src/pad/mock.ts",
+      "what": "Создана заглушка MockPadDriver",
+      "why": "Точка подключения canvas-драйвера в T-004."
+    },
+    {
+      "path": "web/src/pad/signotec.ts",
+      "what": "Создана заглушка SignotecPadDriver",
+      "why": "Точка подключения SDK в T-005."
+    },
+    {
+      "path": "web/src/pages/DocumentPage.tsx",
+      "what": "Добавлены загрузка документа и состояние блоков и шагов",
+      "why": "Связь маршрута документа с разметкой, подписью и результатом."
+    },
+    {
+      "path": "web/src/pages/LoginPage.tsx",
+      "what": "Создан экран-заглушка входа",
+      "why": "Точка подключения формы входа в T-003."
+    },
+    {
+      "path": "web/src/pages/UploadPage.tsx",
+      "what": "Создан экран-заглушка загрузки",
+      "why": "Точка подключения загрузки PDF в T-003."
+    },
+    {
+      "path": "web/src/steps/MarkStep.tsx",
+      "what": "Создан шаг разметки с заданными props",
+      "why": "Точка подключения интерфейса разметки в T-003."
+    },
+    {
+      "path": "web/src/steps/ResultStep.tsx",
+      "what": "Создан шаг результата с заданными props",
+      "why": "Точка подключения просмотра и скачивания в T-004."
+    },
+    {
+      "path": "web/src/steps/SignStep.tsx",
+      "what": "Создан шаг подписи с заданными props",
+      "why": "Точка подключения планшета и отправки подписи в T-004."
+    },
+    {
+      "path": "web/src/styles.css",
+      "what": "Добавлены общие светлые стили с адаптивной шириной",
+      "why": "Базовая вёрстка для экранов от 360 px."
+    },
+    {
+      "path": "web/tsconfig.json",
+      "what": "Настроены типы Vite, JSX и сборка без промежуточных JS-файлов",
+      "why": "Проверка типов приложения, тестов и конфигурации."
+    },
+    {
+      "path": "web/vite.config.ts",
+      "what": "Настроены Vite, порт 5173, прокси API и среда jsdom",
+      "why": "Совместный локальный запуск и тестирование интерфейса."
+    }
+  ],
+  "tests": [
+    {
+      "cmd": "npm ci",
+      "result": "passed",
+      "details": "Чистая установка по package-lock.json на Node.js 22.23.4."
+    },
+    {
+      "cmd": "npm run typecheck",
+      "result": "passed",
+      "details": "Прошли shared, server и web."
+    },
+    {
+      "cmd": "npm run lint",
+      "result": "passed",
+      "details": "Прошли shared, server и web."
+    },
+    {
+      "cmd": "npm test",
+      "result": "passed",
+      "details": "24 серверных и 12 веб-тестов прошли. Существующий тест выгрузки PDF запускается при наличии VISUAL_OUT, в обычной команде он пропущен."
+    },
+    {
+      "cmd": "npm run build",
+      "result": "passed",
+      "details": "Получены server/dist/index.js и web/dist."
+    },
+    {
+      "cmd": "npm run dev -w server; npm run dev -w web",
+      "result": "passed",
+      "details": "Сервер на 3000 отвечает /health. Vite на 5173 отдаёт /login и проксирует /health и /api."
+    },
+    {
+      "cmd": "node server/dist/index.js",
+      "result": "passed",
+      "details": "В production /health вернул 200 и {\"ok\":true}, SPA и ассеты доступны, неизвестные /api вернули JSON 404. SIGTERM завершил процесс с кодом 0. Без APP_PASSWORD запуск завершился с кодом 1."
+    },
+    {
+      "cmd": "node --import tsx --input-type=module (проверка loadConfig)",
+      "result": "passed",
+      "details": "Значения по умолчанию, переопределение через env, стабильность случайного секрета в процессе и проверка порта."
+    },
+    {
+      "cmd": "esbuild (пробная сборка с импортами @e-sign/shared и fastify)",
+      "result": "passed",
+      "details": "PadError из shared включён в файл, import Fastify оставлен внешним."
+    },
+    {
+      "cmd": "Chrome: локальная проверка собранного интерфейса",
+      "result": "passed",
+      "details": "Подставленный ответ authenticated:false отправил /doc/smoke на /login. При ширине окна 360 px ширина страницы 360 px, отображается заголовок «Вход»."
+    },
+    {
+      "cmd": "git add -- <файлы T-001>",
+      "result": "failed",
+      "details": "Песочница запретила создание .git/worktrees/T-001/index.lock. Изменения и статус сохранены в рабочей копии для автокоммита диспетчером."
+    }
+  ],
+  "questions": [],
+  "decisions_made": [
+    "Конфигурация экспортируется как loadConfig и Config. PORT проверяется как целое число от 0 до 65535, MAX_UPLOAD_MB и RETENTION_DAYS как положительные целые. DATA_DIR сохраняется в виде строки из env.",
+    "Регистрация cookie, multipart и rate-limit отложена до реализации маршрутов T-002. Для сборки esbuild внешние npm-пакеты исключаются из файла, а @e-sign/shared разрешается в исходный entrypoint workspace.",
+    "Vitest в сервере и вебе использует одну ветку 4.0, чтобы Vite и расширение matchers для jest-dom имели совместимые типы.",
+    "Проверка сеанса повторяется при смене pathname. Ошибка HTTP от /api/session показывается сообщением об ошибке проверки. До T-002 ответ реального API /api/session — 404, сценарий сессии проверяется с моками.",
+    "Функция login принимает LoginRequest. В HTTP-ошибках с телом ApiError сохраняются status, code, message и details, для ответа другого формата используется code internal.",
+    "DocumentPage сбрасывает состояние при смене id. После onSigned она использует DocumentInfo из SignResponse и отображает ResultStep.",
+    "Методы временных PadDriver-заглушек возвращают отклонённый Promise с PadError по карточке T-001, включая cancel и disconnect. Их рабочие реализации относятся к T-004 и T-005."
+  ],
+  "minutes_spent": 8
+}

@@ -1,0 +1,41 @@
+:root {
+  color-scheme: light;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: #18263b;
+  background: #f4f6fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app-shell {
+  width: min(calc(100% - 2rem), 72rem);
+  margin: clamp(1.5rem, 5vw, 4rem) auto;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  overflow-wrap: anywhere;
+  background: #fff;
+  border: 1px solid #dce3ed;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 2rem rgb(24 38 59 / 6%);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  line-height: 1.2;
+}
+
+p[role='status'],
+p[role='alert'] {
+  margin: 0;
+}
+
+p[role='alert'] {
+  color: #a02038;
+}
