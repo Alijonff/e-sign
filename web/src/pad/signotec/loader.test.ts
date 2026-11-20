@@ -28,6 +28,16 @@ it('подключает один скрипт по умолчанию для п
   expect(scripts()).toHaveLength(1);
 });
 
+it('находит библиотеку в объекте window.STPadServerLib, как её создаёт signotec 3.5.0', async () => {
+  const { loadSignotec } = await import('./loader');
+  const pending = loadSignotec();
+  const commons = { name: 'commons' };
+  const standard = { name: 'standard' };
+  vi.stubGlobal('STPadServerLib', { STPadServerLibCommons: commons, STPadServerLibDefault: standard });
+  scripts()[0]?.dispatchEvent(new Event('load'));
+  await expect(pending).resolves.toEqual({ commons, standard });
+});
+
 it.each(['error', 'load'])('возвращает service_unavailable и позволяет повторить загрузку после %s без библиотеки', async (event) => {
   vi.stubEnv('VITE_SIGNOTEC_LIB_URL', '/vendor/signotec-3.5.js');
   const { loadSignotec } = await import('./loader');

@@ -69,6 +69,10 @@ export interface SignotecLibrary {
 
 declare global {
   interface Window {
+    STPadServerLib?: {
+      STPadServerLibCommons?: SignotecCommons;
+      STPadServerLibDefault?: SignotecDefault;
+    };
     STPadServerLibCommons?: SignotecCommons;
     STPadServerLibDefault?: SignotecDefault;
   }

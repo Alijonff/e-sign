@@ -3,9 +3,13 @@ import type { SignotecLibrary } from './vendor.d';
 
 let loading: Promise<SignotecLibrary> | undefined;
 
+// Библиотека 3.5.0 при подключении обычным <script> кладёт всё в один объект window.STPadServerLib
+// (STPadServerLibCommons, STPadServerLibDefault, STPadServerLibApi). Отдельные глобальные имена
+// остаются запасным вариантом (старые сборки, ручное присваивание).
 function libraryFromWindow(): SignotecLibrary | undefined {
-  const commons = window.STPadServerLibCommons;
-  const standard = window.STPadServerLibDefault;
+  const bundle = window.STPadServerLib;
+  const commons = bundle?.STPadServerLibCommons ?? window.STPadServerLibCommons;
+  const standard = bundle?.STPadServerLibDefault ?? window.STPadServerLibDefault;
   if (commons && standard) return { commons, standard };
 }
 
