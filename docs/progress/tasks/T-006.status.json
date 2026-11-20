@@ -1,0 +1,67 @@
+{
+  "task": "T-006",
+  "state": "done",
+  "summary": "Добавлены Dockerfile, настройки Railway, пример окружения и инструкция по выкладке. Локальный production-запуск на Node 22 с зависимостями только сервера вернул 200 для /health и /. Тестовый PDF записан в DATA_DIR. Docker CLI установлен, но демон недоступен. Docker-образ и Railway Volume на платформе не проверены. Git не смог создать index.lock из-за ограничений песочницы, файлы оставлены диспетчеру в рабочей копии.",
+  "changed_files": [
+    {
+      "path": "Dockerfile",
+      "what": "Многоэтапная сборка на node:22-slim с отдельной установкой production-зависимостей сервера и запуском Node от пользователя node.",
+      "why": "Упаковать сервер и собранный веб-клиент в один контейнер с поддержкой постоянного хранилища."
+    },
+    {
+      "path": ".dockerignore",
+      "what": "Исключены локальные зависимости, сборки, данные, файлы окружения и вспомогательные каталоги.",
+      "why": "Уменьшить контекст сборки и исключить передачу локальных данных и секретов."
+    },
+    {
+      "path": "railway.json",
+      "what": "Заданы сборка по Dockerfile, healthcheck /health и перезапуск при сбое.",
+      "why": "Зафиксировать настройки выкладки из карточки в формате Railway Config as Code."
+    },
+    {
+      "path": ".env.example",
+      "what": "Перечислены переменные сервера и сборки фронтенда. APP_PASSWORD и SESSION_SECRET оставлены пустыми.",
+      "why": "Показать настройки из T-001 и их значения по умолчанию."
+    },
+    {
+      "path": "docs/DEPLOY.md",
+      "what": "Описано подключение GitHub, настройка Volume, переменных, healthcheck, перезапуска и HTTPS-домена.",
+      "why": "Подготовить инструкцию для будущей выкладки через git."
+    },
+    {
+      "path": "docs/progress/tasks/T-006.status.json",
+      "what": "Записаны итог, проверки и решения по задаче.",
+      "why": "Вне карточки: обязательный файл статуса для диспетчера."
+    }
+  ],
+  "tests": [
+    {
+      "cmd": "npm ci && npm run typecheck && npm run lint && npm test && npm run build",
+      "result": "passed",
+      "details": "Все команды завершились успешно. 82 теста прошли, один пропущен существующим набором."
+    },
+    {
+      "cmd": "docker build -t e-sign:t006 .",
+      "result": "failed",
+      "details": "Демон Docker недоступен по /var/run/docker.sock. Профиль Colima имеет статус Broken. Выполнена локальная имитация."
+    },
+    {
+      "cmd": "Node 22: npm ci && npm run build",
+      "result": "passed",
+      "details": "На Node 22.23.5 собраны server/dist/index.js и web/dist/index.html из исходников рабочей копии."
+    },
+    {
+      "cmd": "npm ci --omit=dev --workspace=@e-sign/server && sh -n e-sign-entrypoint && NODE_ENV=production APP_PASSWORD=test SESSION_SECRET=x DATA_DIR=<tmp> node server/dist/index.js && curl /health и /",
+      "result": "passed",
+      "details": "В изолированной копии состава финального образа сервер запущен через стартовый скрипт от обычного пользователя. GET /health вернул 200 и {\"ok\":true}. GET / вернул 200 text/html и байты web/dist/index.html. JS совпал со сборкой. Вход вернул 204, загрузка вымышленного PDF вернула 201, записанный оригинал совпал с образцом."
+    }
+  ],
+  "questions": [],
+  "decisions_made": [
+    "Production-зависимости устанавливаются из существующего lock-файла командой npm ci --omit=dev --workspace=@e-sign/server.",
+    "Контейнер по умолчанию запускается с USER node. На Railway RAILWAY_RUN_UID=0 позволяет стартовому скрипту подготовить права на /data. Затем скрипт сбрасывает привилегии через setpriv и заменяет себя процессом Node.",
+    "Для новых сервисов Railway шаги настройки /health и On Failure указаны в панели Railway, поскольку новые сервисы не могут использовать прежний Config as Code. railway.json сохранён согласно карточке.",
+    "Для VITE_PAD_DRIVER предусмотрен build arg, соответствующий переменной сборки фронтенда из T-001."
+  ],
+  "minutes_spent": 5
+}

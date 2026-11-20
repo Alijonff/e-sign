@@ -1,0 +1,17 @@
+.git
+**/node_modules
+**/dist
+**/coverage
+**/*.tsbuildinfo
+**/.env
+**/.env.*
+**/.npmrc
+**/*.session
+**/secrets
+**/*.log
+**/.DS_Store
+data
+tmp
+docs
+samples
+tools
