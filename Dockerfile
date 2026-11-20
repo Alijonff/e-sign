@@ -37,13 +37,15 @@ COPY --chmod=755 <<'EOF' /usr/local/bin/e-sign-entrypoint
 set -eu
 
 if [ "$(id -u)" -eq 0 ]; then
-    install -d -o node -g node -m 0700 -- "$DATA_DIR"
+    mkdir -p -- "$DATA_DIR"
+    chown node:node -- "$DATA_DIR"
+    chmod 0700 -- "$DATA_DIR"
     exec setpriv --reuid=node --regid=node --init-groups -- "$@"
 fi
 
 exec "$@"
 EOF
 
-USER node
+# Контейнер стартует от root только ради прав на Volume; сервер сразу переходит на пользователя node (setpriv выше).
 ENTRYPOINT ["/usr/local/bin/e-sign-entrypoint"]
 CMD ["node", "server/dist/index.js"]
