@@ -29,6 +29,20 @@
       "effort": "high",
       "limit_min": 75,
       "log": "docs/progress/logs/T-002.a1.jsonl"
+    },
+    {
+      "task": "T-003",
+      "branch": "codex/T-003",
+      "worktree": "/Users/fatullayevalijon/Documents/Projects/e-sign-wt/T-003",
+      "pid": 49039,
+      "thread_id": null,
+      "started_at": "2026-11-20T16:26:07+05:00",
+      "status": "running",
+      "attempt": 1,
+      "model": "gpt-6.2-sol",
+      "effort": "high",
+      "limit_min": 90,
+      "log": "docs/progress/logs/T-003.a1.jsonl"
     }
   ],
   "done": [
