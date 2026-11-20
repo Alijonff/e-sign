@@ -6,7 +6,12 @@ export interface NormalizeOptions {
   backgroundLuma?: number;
   /** Отступ вокруг подписи после обрезки, пикселей. По умолчанию 4. */
   marginPx?: number;
+  /** Цвет чернил. По умолчанию синий, как у шариковой ручки. */
+  inkColor?: { r: number; g: number; b: number };
 }
+
+/** Синий цвет шариковой ручки: достаточно тёмный, чтобы читаться на копиях и в чёрно-белой печати. */
+export const BALLPOINT_BLUE = { r: 20, g: 40, b: 170 } as const;
 
 /**
  * Готовит картинку подписи с планшета к вставке:
@@ -17,6 +22,7 @@ export interface NormalizeOptions {
 export function normalizeSignaturePng(png: Uint8Array, options: NormalizeOptions = {}): Uint8Array {
   const bgLuma = options.backgroundLuma ?? 235;
   const margin = options.marginPx ?? 4;
+  const ink = options.inkColor ?? BALLPOINT_BLUE;
 
   let src: PNG;
   try {
@@ -47,12 +53,11 @@ export function normalizeSignaturePng(png: Uint8Array, options: NormalizeOptions
         // Светлее порога — фон; от порога до чёрного альфа растёт линейно, штрих получается мягким.
         const alpha = luma >= bgLuma ? 0 : Math.round(((bgLuma - luma) / bgLuma) * 255 * 1.4);
         out[i + 3] = Math.min(255, alpha);
-        // Цвет штриха — исходный, но не светлее половины серого, чтобы подпись читалась.
-        const cap = (v: number) => Math.min(v, 90);
-        out[i] = cap(out[i]!);
-        out[i + 1] = cap(out[i + 1]!);
-        out[i + 2] = cap(out[i + 2]!);
       }
+      // Все чернила одного цвета; плавность линии даёт прозрачность.
+      out[i] = ink.r;
+      out[i + 1] = ink.g;
+      out[i + 2] = ink.b;
       if (out[i + 3]! > 8) {
         if (x < minX) minX = x;
         if (x > maxX) maxX = x;

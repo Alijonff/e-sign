@@ -58,6 +58,20 @@ describe('normalizeSignaturePng', () => {
     expect(ink).toBeGreaterThan(500);
   });
 
+  it('красит штрихи в синий цвет ручки, и для чёрной, и для прозрачной картинки', () => {
+    for (const transparent of [false, true]) {
+      const out = PNG.sync.read(Buffer.from(normalizeSignaturePng(makeSignaturePng({ transparent }))));
+      let inked = 0;
+      for (let i = 0; i < out.data.length; i += 4) {
+        if (out.data[i + 3]! > 200) {
+          inked++;
+          expect([out.data[i], out.data[i + 1], out.data[i + 2]]).toEqual([20, 40, 170]);
+        }
+      }
+      expect(inked).toBeGreaterThan(500);
+    }
+  });
+
   it('прозрачный PNG только обрезается', () => {
     const out = PNG.sync.read(Buffer.from(normalizeSignaturePng(makeSignaturePng({ transparent: true }))));
     expect(out.width).toBeLessThan(600);
