@@ -28,9 +28,7 @@ it('выбирает mock по умолчанию', () => {
   expect(defaultPadKind()).toBe('mock');
 });
 
-it('создаёт запрошенную заглушку драйвера', async () => {
+it('создаёт запрошенный драйвер', () => {
   expect(createPadDriver('mock')).toBeInstanceOf(MockPadDriver);
-  const driver = createPadDriver('signotec');
-  expect(driver).toBeInstanceOf(SignotecPadDriver);
-  await expect(driver.connect()).rejects.toMatchObject({ code: 'unknown', message: 'Не реализовано' });
+  expect(createPadDriver('signotec')).toBeInstanceOf(SignotecPadDriver);
 });
