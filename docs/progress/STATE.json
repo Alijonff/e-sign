@@ -23,7 +23,7 @@
       "pid": 49023,
       "thread_id": "01a1f8b4-e643-7a33-810e-98ddc91a700b",
       "started_at": "2026-11-20T16:26:07+05:00",
-      "status": "done",
+      "status": "accepted",
       "attempt": 1,
       "model": "gpt-6.2-sol",
       "effort": "high",
@@ -79,7 +79,8 @@
   ],
   "done": [
     "T-001",
-    "T-004"
+    "T-004",
+    "T-002"
   ],
-  "updated_at": "2026-11-20T16:37:19+05:00"
+  "updated_at": "2026-11-20T16:37:30+05:00"
 }
