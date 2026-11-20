@@ -1,0 +1,62 @@
+# e-sign — подпись PDF на планшете Evolis Sig100 (правила для Claude Code и Codex)
+
+Начато 20 ноября 2026. Процесс разработки заимствован из проекта Lifestyle (`~/Documents/Projects/Lifestyle`, там же полные правила в `docs/restart/plans/00-RULES.md`).
+
+## Продукт
+
+Веб-приложение. Сотрудник загружает PDF, рисует на страницах блоки подписи и нажимает «Подписать». Клиент один раз расписывается на планшете Evolis Sig100 (= signotec Sigma), картинка подписи автоматически ложится во все блоки. Подписанный PDF сохраняется и скачивается.
+
+Первая версия — **пилот**: подпись вставляется как картинка, юридически значимой криптоподписи нет. Не делаем: сертификаты и хэш документа, автоопределение блоков, интеграцию с документооборотом, несколько подписантов, планшет на Mac.
+
+- Браузер на Windows-ПК связывается с планшетом через службу **signoPAD-API/Web** (WebSocket, порт 49494, адрес `wss://local.signotecwebsocket.de:49494`). Страница открывается с Railway по HTTPS. JS-файл библиотеки signotec берётся из дистрибутива и кладётся в `web/public/vendor/` (в документации ссылки на CDN нет).
+- Планшет скрыт за интерфейсом `PadDriver`: `mock` (рисование мышью на canvas, для разработки на Mac) и `signotec` (реальный).
+- Координаты блоков хранятся в долях страницы (0..1, начало слева сверху). Перевод в точки PDF — только в `server/src/core/placement.ts`.
+- Бриф со справкой по signotec: `docs/BRIEF.md`.
+
+## Стек
+
+Node.js + TypeScript, `npm`. `server/` — Fastify, `pdf-lib`. `web/` — Vite, `pdfjs-dist`. Общие типы и схемы запросов — `shared/`. Деплой — Railway (нужен постоянный диск; PDF могут быть больше 4,5 МБ).
+
+## Где что
+
+| Путь | Содержимое |
+|---|---|
+| `docs/plans/QUEUE.md` | карточки задач Codex (`### T-NNN · название`) |
+| `docs/progress/` | `STATE.json`, `REPORT.md`, `tasks/<ID>.status.json`, `logs/` (в git не входит) |
+| `tools/pipeline/` | конвейер Claude ↔ Codex (`dispatch.py`, `check.py`, `resume.py`, `accept.py`, `report.py`) |
+| `shared/` | контракт API и интерфейс `PadDriver` (пишет Claude, Codex не меняет) |
+| `server/`, `web/` | приложение |
+| `samples/` | тестовые PDF |
+| `docs/` | бриф, письмо в signotec, решения |
+
+## Роли
+
+- **Claude** — оркестратор: архитектура, контракт (`shared/`), ядро вставки подписи (`server/src/core/`), карточки, ревью, слияние в `main`, письмо в signotec.
+- **Codex** (`gpt-6.2-sol`) — задачи из `docs/plans/QUEUE.md` строго по карточке: не принимает проектных решений, не меняет `shared/` и `server/src/core/`, не пушит, не пишет пользователю. Вопрос — `state: "question"` в `docs/progress/tasks/<ID>.status.json`.
+- **Ali** — принимает результат, отвечает на вопросы, тестирует на Windows-ПК с планшетом.
+
+## Процесс
+
+1. Большая задача или новый проект — сначала скилл `interview-me` (в чате, по одному вопросу с догадкой и рекомендацией), итог с «что не делаем» и «да» Ali, затем план (режим plan). Мелкие правки и ясные команды идут без интервью.
+2. Карточка в `docs/plans/QUEUE.md`: файлы, поведение с примерами «вход → выход», тесты, команды проверки, «Не делать». Карточка самодостаточна: Codex не видит чат.
+3. Запуск: `python3 tools/pipeline/dispatch.py T-001`. Ветка `codex/<ID>` в `../e-sign-wt/<ID>`, ≤3 задач параллельно, лимит сессии 45 минут.
+4. Статус и ревью: `python3 tools/pipeline/check.py`; diff ветки, проверки, сверка `changed_files` с diff; принять — `python3 tools/pipeline/accept.py T-001`; вернуть — `resume.py T-001 "замечание"`.
+5. Коммиты `<ID>: что сделано`.
+6. Файл статуса Codex — по схеме: `task`, `state` (`done|blocked|question|failed`), `summary`, `changed_files` (`path`, `what`, `why`; вне карточки — `why` начинается с «Вне карточки:»), `tests`, `questions`, `decisions_made`, `minutes_spent`.
+
+## Команды
+
+```bash
+npm install
+npm run typecheck && npm run lint && npm test && npm run build
+```
+
+Для задач Codex: `export R=$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies; export PATH="$R/node/bin:$R/bin/fallback:$PATH"`.
+
+## Выкладка и секреты
+
+Выкладка на хостинг — **только через git** (репозиторий на GitHub, Railway подключён к нему, выкладка = push; не `railway up` с компьютера). `.env`, пароли и ключи в репозиторий не попадают, секреты — в переменных платформы. Создание репозитория на GitHub, подключение Railway и push — **только по слову Ali**. Конвейер ничего не пушит.
+
+Документы клиентов — персональные данные: страница закрыта общим паролем (`APP_PASSWORD`), загруженные и подписанные файлы лежат на Volume (`DATA_DIR`) и удаляются через `RETENTION_DAYS`. Реальные документы клиентов в репозиторий не попадают, в `samples/` только вымышленные.
+
+Писать по-русски, кратко. Тексты интерфейса — по-русски.
