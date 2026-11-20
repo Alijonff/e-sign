@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router';
 import { getSession } from './api';
+import { MockPadHost } from './pad/MockPadHost';
 import { DocumentPage } from './pages/DocumentPage';
 import { LoginPage } from './pages/LoginPage';
 import { UploadPage } from './pages/UploadPage';
@@ -46,6 +47,7 @@ export function App() {
           </Route>
         </Routes>
       </main>
+      <MockPadHost />
     </BrowserRouter>
   );
 }
