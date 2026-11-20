@@ -20,7 +20,14 @@ const phaseLabels = {
   done: 'Готово',
 };
 
-type SignState = { phase: 'idle' | keyof typeof phaseLabels } | { phase: 'error'; message: string };
+type SignState = { phase: 'idle' | keyof typeof phaseLabels } | { phase: 'error'; message: string; details?: string };
+
+/** Техническая строка для диагностики: исходное сообщение драйвера и его код. */
+function padDetails(error: unknown): string | undefined {
+  if (!(error instanceof PadError)) return undefined;
+  const code = error.driverCode === undefined ? '' : `, код ${error.driverCode}`;
+  return `${error.code}: ${error.message}${code}`;
+}
 
 function signingErrorMessage(error: unknown): string {
   if (error instanceof PadError) {
@@ -109,7 +116,9 @@ export function SignStep({ document, blocks, onBack, onSigned, driver }: SignSte
       } else if (error instanceof ApiClientError && error.code === 'unauthorized') {
         void navigate('/login', { replace: true });
       } else {
-        setState({ phase: 'error', message: signingErrorMessage(error) });
+        console.error('Ошибка подписи', error);
+        const details = padDetails(error);
+        setState({ phase: 'error', message: signingErrorMessage(error), ...(details ? { details } : {}) });
       }
     } finally {
       if (attempt.current === controller) attempt.current = undefined;
@@ -124,6 +133,7 @@ export function SignStep({ document, blocks, onBack, onSigned, driver }: SignSte
       <h1>Подпись документа</h1>
       <p>Блоков для подписи: {blocks.length} на {pageCount} страницах</p>
       {phase === 'error' && <p role="alert">{state.message}</p>}
+      {phase === 'error' && state.details && <p><small>Подробности: {state.details}</small></p>}
       {phase !== 'idle' && phase !== 'error' && <p role="status">{phaseLabels[phase]}</p>}
       <div className="signature-actions">
         <button type="button" onClick={onBack} disabled={phase === 'sending' || phase === 'done'}>Назад</button>

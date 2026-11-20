@@ -97,8 +97,9 @@ export class SignotecVendor {
         params.setPadSubset('HID');
         return standard.searchForPads(params);
       });
+      console.info('signotec: searchForPads', foundPads);
       if (!foundPads.some((pad) => pad.index === PAD_INDEX)) {
-        throw new PadError('pad_not_found', 'Планшет signotec не найден');
+        throw new PadError('pad_not_found', `Служба signotec не видит планшет (найдено устройств: ${foundPads.length})`);
       }
       await this.call((standard) => standard.openPad(new standard.Params.openPad(PAD_INDEX)));
     } catch (error) {
