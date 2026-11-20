@@ -45,6 +45,8 @@ def main() -> int:
     r.pop("retry_at", None)
     r.pop("finished_at", None)
     r.pop("summary", None)
+    r.pop("notified", None)
+    r.pop("attention", None)
     lib.save_state(state)
     print(f"возобновлена {tid} attempt {attempt}, pid {proc.pid}")
     return 0

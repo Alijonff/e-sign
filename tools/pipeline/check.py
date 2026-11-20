@@ -41,8 +41,8 @@ def autocommit(wt: Path, tid: str) -> bool:
     return True
 
 
-def main() -> int:
-    state = lib.load_state()
+def refresh(state: dict) -> list[str]:
+    """Обновляет статусы запущенных задач в `state` (на месте), возвращает список событий."""
     actions: list[str] = []
     for r in state["runs"]:
         if r["status"] not in ("running", "waiting_limit"):
@@ -96,6 +96,12 @@ def main() -> int:
             r["summary"] = "процесс завершился без status.json"
             actions.append(f"FAILED {tid}: нет status.json; хвост журнала: {tail[:300]!r}")
         r["finished_at"] = lib.now().isoformat(timespec="seconds")
+    return actions
+
+
+def main() -> int:
+    state = lib.load_state()
+    actions = refresh(state)
     lib.save_state(state)
 
     running = [r for r in state["runs"] if r["status"] == "running"]
