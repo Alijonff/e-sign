@@ -21,7 +21,7 @@
       "branch": "codex/T-002",
       "worktree": "/Users/fatullayevalijon/Documents/Projects/e-sign-wt/T-002",
       "pid": 49023,
-      "thread_id": null,
+      "thread_id": "01a1f8b4-e643-7a33-810e-98ddc91a700b",
       "started_at": "2026-11-20T16:26:07+05:00",
       "status": "running",
       "attempt": 1,
@@ -35,7 +35,7 @@
       "branch": "codex/T-003",
       "worktree": "/Users/fatullayevalijon/Documents/Projects/e-sign-wt/T-003",
       "pid": 49039,
-      "thread_id": null,
+      "thread_id": "01a1f8b4-e643-7303-bb81-768a944ed80c",
       "started_at": "2026-11-20T16:26:07+05:00",
       "status": "running",
       "attempt": 1,
@@ -43,10 +43,26 @@
       "effort": "high",
       "limit_min": 90,
       "log": "docs/progress/logs/T-003.a1.jsonl"
+    },
+    {
+      "task": "T-004",
+      "branch": "codex/T-004",
+      "worktree": "/Users/fatullayevalijon/Documents/Projects/e-sign-wt/T-004",
+      "pid": 49151,
+      "thread_id": "01a1f8b4-e6bd-7b13-b396-2584a47b7363",
+      "started_at": "2026-11-20T16:26:07+05:00",
+      "status": "done",
+      "attempt": 1,
+      "model": "gpt-6.2-sol",
+      "effort": "high",
+      "limit_min": 75,
+      "log": "docs/progress/logs/T-004.a1.jsonl",
+      "summary": "Реализованы mock-планшет, отправка подписи и экран подписанного PDF. Корневые проверки прошли. Сценарий с подменённым fetch проверен в jsdom, включая декодирование сформированного PNG. Доступ к окну браузера в этой сессии был недоступен. Изменения и статус оставлены диспетчеру для коммита: песочница запрещает создание index.lock при git add.",
+      "finished_at": "2026-11-20T16:36:48+05:00"
     }
   ],
   "done": [
     "T-001"
   ],
-  "updated_at": "2026-11-20T16:26:07+05:00"
+  "updated_at": "2026-11-20T16:36:48+05:00"
 }
