@@ -7,14 +7,16 @@
       "pid": 45556,
       "thread_id": "01a1f8aa-f641-7f42-9707-89b494fb950e",
       "started_at": "2026-11-20T16:15:14+05:00",
-      "status": "running",
+      "status": "done",
       "attempt": 1,
       "model": "gpt-6.2-sol",
       "effort": "high",
       "limit_min": 60,
-      "log": "docs/progress/logs/T-001.a1.jsonl"
+      "log": "docs/progress/logs/T-001.a1.jsonl",
+      "summary": "Каркас Fastify и React реализован. Корневые проверки прошли на Node.js 22.23.4. Оба dev-сервера стартуют, собранный сервер отдаёт /health и веб-приложение, корректно обрабатывает SIGTERM. Переход на /login и ширина 360 px проверены в Chrome с подставленным ответом API. Рабочая копия готова к автокоммиту диспетчером: песочница запретила Git создать index.lock.",
+      "finished_at": "2026-11-20T16:25:46+05:00"
     }
   ],
   "done": [],
-  "updated_at": "2026-11-20T16:23:57+05:00"
+  "updated_at": "2026-11-20T16:25:46+05:00"
 }
