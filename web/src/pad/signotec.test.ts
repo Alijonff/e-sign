@@ -342,3 +342,15 @@ it('завершает ожидание при отключении планше
   expect(commons.createConnection).toHaveBeenCalledTimes(2);
   expect(standard.openPad).toHaveBeenCalledTimes(2);
 });
+
+it('открывает первый найденный планшет, даже если индекс начинается не с нуля или пришёл строкой', async () => {
+  const { standard } = installVendor();
+  standard.searchForPads = vi.fn(async () => ({
+    command: 'test', returnCode: 0, foundPads: [{ index: '1' as unknown as number }],
+  }));
+  const driver = new SignotecPadDriver();
+  await driver.connect();
+  expect(standard.openPad).toHaveBeenCalledWith(expect.objectContaining({ padIndex: 1 }));
+  await driver.disconnect();
+  expect(standard.closePad).toHaveBeenCalledWith(expect.objectContaining({ padIndex: 1 }));
+});

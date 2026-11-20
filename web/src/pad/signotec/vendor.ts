@@ -3,7 +3,6 @@ import { translateError } from './errors';
 import { loadSignotec } from './loader';
 import type { SignotecDefault, SignotecLibrary } from './vendor.d';
 
-const PAD_INDEX = 0;
 const PEN_WIDTH_PX = 3;
 const CONNECTION_TIMEOUT_MS = 8_000;
 
@@ -38,6 +37,8 @@ export class SignotecVendor {
   readonly signal = this.lifetime.signal;
   private library?: SignotecLibrary;
   private restoreDisconnect?: () => void;
+  /** Индекс открытого планшета, который вернула служба при поиске. */
+  private padIndex?: number;
 
   async connect(): Promise<void> {
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -50,7 +51,7 @@ export class SignotecVendor {
       const { commons } = library;
       const previous = commons.handleDisconnect;
       commons.handleDisconnect = (padIndex) => {
-        if (padIndex === PAD_INDEX) this.destroy(new PadError('pad_not_found', 'Планшет signotec отключён'));
+        if (this.padIndex !== undefined && Number(padIndex) === this.padIndex) this.destroy(new PadError('pad_not_found', 'Планшет signotec отключён'));
       };
       this.restoreDisconnect = () => { commons.handleDisconnect = previous; };
 
@@ -97,11 +98,18 @@ export class SignotecVendor {
         params.setPadSubset('HID');
         return standard.searchForPads(params);
       });
-      console.info('signotec: searchForPads', foundPads);
-      if (!foundPads.some((pad) => pad.index === PAD_INDEX)) {
-        throw new PadError('pad_not_found', `Служба signotec не видит планшет (найдено устройств: ${foundPads.length})`);
+      console.info('signotec: searchForPads', JSON.stringify(foundPads));
+      // Берём первый найденный планшет. Индекс у службы может начинаться не с нуля и приходить строкой.
+      const first = foundPads[0];
+      if (!first) {
+        throw new PadError('pad_not_found', 'Служба signotec не видит планшет (найдено устройств: 0)');
       }
-      await this.call((standard) => standard.openPad(new standard.Params.openPad(PAD_INDEX)));
+      const index = Number(first.index);
+      if (!Number.isInteger(index)) {
+        throw new PadError('pad_not_found', `Служба signotec вернула планшет без индекса: ${JSON.stringify(first)}`);
+      }
+      this.padIndex = index;
+      await this.call((standard) => standard.openPad(new standard.Params.openPad(index)));
     } catch (error) {
       throw translateError(error);
     }
@@ -168,7 +176,7 @@ export class SignotecVendor {
   }
 
   closePad(): Promise<unknown> {
-    return this.call((standard) => standard.closePad(new standard.Params.closePad(PAD_INDEX)));
+    return this.call((standard) => standard.closePad(new standard.Params.closePad(this.padIndex ?? 0)));
   }
 
   private standardMode(): SignotecDefault {
