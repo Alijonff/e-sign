@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ApiClientError, signDocument } from '../api';
 import { createPadDriver, defaultPadKind } from '../pad';
+import { padErrorDetails, padErrorMessage } from '../pad/messages';
 import { buildPadPrompt } from '../sign/prompt';
 
 export interface SignStepProps {
@@ -24,24 +25,11 @@ type SignState = { phase: 'idle' | keyof typeof phaseLabels } | { phase: 'error'
 
 /** Техническая строка для диагностики: исходное сообщение драйвера и его код. */
 function padDetails(error: unknown): string | undefined {
-  if (!(error instanceof PadError)) return undefined;
-  const code = error.driverCode === undefined ? '' : `, код ${error.driverCode}`;
-  return `${error.code}: ${error.message}${code}`;
+  return error instanceof PadError ? padErrorDetails(error) : undefined;
 }
 
 function signingErrorMessage(error: unknown): string {
-  if (error instanceof PadError) {
-    switch (error.code) {
-      case 'service_unavailable':
-        return 'Служба планшета не отвечает. Проверьте, что signoPAD-API/Web запущена на этом компьютере';
-      case 'pad_not_found':
-        return 'Планшет не найден. Проверьте подключение по USB';
-      case 'timeout':
-        return 'Подпись не получена вовремя';
-      default:
-        return `Ошибка планшета: ${error.message}`;
-    }
-  }
+  if (error instanceof PadError) return padErrorMessage(error);
   if (error instanceof ApiClientError) {
     switch (error.code) {
       case 'invalid_blocks':

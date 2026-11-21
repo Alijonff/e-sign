@@ -1,4 +1,5 @@
 import { PadError } from '@e-sign/shared';
+import { signotecConfig } from './config';
 import { translateError } from './errors';
 import { loadSignotec } from './loader';
 import type { SignotecDefault, SignotecLibrary } from './vendor.d';
@@ -62,7 +63,7 @@ export class SignotecVendor {
         timer = setTimeout(() => {
           this.destroy(new PadError('service_unavailable', 'Служба signoPAD-API/Web не ответила за 8 секунд'));
         }, CONNECTION_TIMEOUT_MS);
-        const url = import.meta.env.VITE_SIGNOTEC_WS_URL || 'wss://local.signotecwebsocket.de:49494';
+        const url = signotecConfig.wsUrl || import.meta.env.VITE_SIGNOTEC_WS_URL || 'wss://local.signotecwebsocket.de:49494';
         commons.createConnection(url, () => resolve(), onSocketFailure, onSocketFailure);
       });
       await untilAborted(opening, this.signal);

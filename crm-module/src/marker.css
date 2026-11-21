@@ -1,0 +1,175 @@
+/* Стили разметки блоков подписи. Имена классов начинаются с mark-, чтобы не пересекаться со стилями CRM. */
+.mark-strip {
+  display: grid;
+  justify-items: center;
+  gap: 1.25rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: #eef2f8;
+}
+
+.mark-sheet {
+  width: min(100%, 900px);
+  min-width: 0;
+}
+
+.mark-sheet-label {
+  margin-bottom: 0.5rem;
+  color: #475973;
+  font-size: 0.875rem;
+}
+
+.mark-page {
+  position: relative;
+  outline: 1px solid #ccd5e3;
+  background: #fff;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+
+.mark-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mark-canvas-error {
+  padding: 0.75rem;
+}
+
+.mark-block {
+  position: absolute;
+  border: 1px solid #244b96;
+  background: rgb(54 109 204 / 17%);
+  cursor: move;
+}
+
+.mark-block--selected {
+  z-index: 1;
+  outline: 1px solid #244b96;
+  background: rgb(54 109 204 / 24%);
+}
+
+.mark-block--preview {
+  border-style: dashed;
+  pointer-events: none;
+}
+
+.mark-block-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: max(100%, 1.35em);
+  overflow: hidden;
+  border-radius: 0 0 0.25rem 0;
+  padding-inline: 0.2em;
+  background: #e1ebff;
+  color: #17396f;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.mark-handle {
+  position: absolute;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #244b96;
+  border-radius: 0.125rem;
+  background: #fff;
+}
+
+.mark-handle[data-handle='nw'] {
+  top: 0;
+  left: 0;
+  transform: translate(-75%, -75%);
+  cursor: nwse-resize;
+}
+
+.mark-handle[data-handle='ne'] {
+  top: 0;
+  right: 0;
+  transform: translate(75%, -75%);
+  cursor: nesw-resize;
+}
+
+.mark-handle[data-handle='sw'] {
+  bottom: 0;
+  left: 0;
+  transform: translate(-75%, 75%);
+  cursor: nesw-resize;
+}
+
+.mark-handle[data-handle='se'] {
+  right: 0;
+  bottom: 0;
+  transform: translate(75%, 75%);
+  cursor: nwse-resize;
+}
+
+.mark-jump,
+.mark-remove {
+  border: 0;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: #244b96;
+  font: inherit;
+  cursor: pointer;
+}
+
+.mark-jump {
+  min-height: 2.5rem;
+  padding: 0.25rem 0.375rem;
+  text-align: left;
+}
+
+.mark-remove {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.mark-remove:hover {
+  background: #fcebf0;
+  color: #a02038;
+}
+
+.mark-remove--block {
+  position: absolute;
+  bottom: calc(100% + 0.25rem);
+  left: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  transform: translateX(-50%);
+  border: 1px solid #c4cfdf;
+  background: #fff;
+}
+
+.mark-remove--block:focus-visible {
+  outline: 2px solid #366dcc;
+  outline-offset: 3px;
+}
+
+.esign-marker {
+  box-sizing: border-box;
+}
+
+.esign-marker *,
+.esign-marker *::before,
+.esign-marker *::after {
+  box-sizing: border-box;
+}
+
+.esign-marker-message {
+  margin: 0.5rem 0;
+  font-family: system-ui, sans-serif;
+}

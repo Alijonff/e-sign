@@ -1,4 +1,5 @@
 import { PadError } from '@e-sign/shared';
+import { signotecConfig } from './config';
 import type { SignotecLibrary } from './vendor.d';
 
 let loading: Promise<SignotecLibrary> | undefined;
@@ -19,8 +20,14 @@ export function loadSignotec(): Promise<SignotecLibrary> {
   if (loading) return loading;
 
   const script = document.createElement('script');
-  script.src = import.meta.env.VITE_SIGNOTEC_LIB_URL || '/vendor/STPadServerLib.js';
-  script.async = true;
+  // Вшитая в модуль библиотека выполняется сразу при добавлении (событий load нет).
+  const inline = !signotecConfig.libUrl && Boolean(signotecConfig.libSource);
+  if (inline) {
+    script.textContent = signotecConfig.libSource ?? '';
+  } else {
+    script.src = signotecConfig.libUrl || import.meta.env.VITE_SIGNOTEC_LIB_URL || '/vendor/STPadServerLib.js';
+    script.async = true;
+  }
 
   loading = new Promise<SignotecLibrary>((resolve, reject) => {
     function fail() {
@@ -37,6 +44,11 @@ export function loadSignotec(): Promise<SignotecLibrary> {
     };
     script.onerror = fail;
     document.head.append(script);
+    if (inline) {
+      const loaded = libraryFromWindow();
+      if (loaded) resolve(loaded);
+      else fail();
+    }
   }).catch((error: unknown) => {
     script.remove();
     loading = undefined;

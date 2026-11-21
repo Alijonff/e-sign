@@ -9,11 +9,13 @@
     "web"
   ],
   "scripts": {
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present && tsc -p crm-module/tsconfig.json --noEmit",
     "lint": "npm run lint --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present && npm run test:module",
     "build": "npm run build --workspaces --if-present",
-    "samples": "node tools/samples/generate.mjs"
+    "samples": "node tools/samples/generate.mjs",
+    "build:module": "vite build --config crm-module/vite.config.ts",
+    "test:module": "vitest run --root crm-module"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

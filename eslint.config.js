@@ -6,14 +6,14 @@ import tseslint from 'typescript-eslint';
 export default defineConfig([
   { ignores: ['**/dist/**', '**/coverage/**'] },
   {
-    files: ['{shared,server,web}/**/*.{ts,tsx}'],
+    files: ['{shared,server,web,crm-module}/**/*.{ts,tsx}'],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     rules: {
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
   {
-    files: ['web/**/*.{ts,tsx}'],
+    files: ['{web,crm-module}/**/*.{ts,tsx}'],
     plugins: { 'react-hooks': reactHooks },
     rules: {
       'react-hooks/rules-of-hooks': 'error',

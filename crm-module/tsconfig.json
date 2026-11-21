@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "exactOptionalPropertyTypes": false
+  },
+  "include": ["src", "test", "../web/src/pad/**/*.d.ts"],
+  "exclude": ["../web/src/**/*.test.ts", "../web/src/**/*.test.tsx"]
+}

@@ -9,7 +9,8 @@
 - Сайт-демонстрация (Railway): <https://app-production-c527bf2b.up.railway.app> (пароль выдаёт Ali)
 - Материалы для ТЗ: [docs/CRM-INTEGRATION.md](docs/CRM-INTEGRATION.md)
 - Репозиторий: приватный, `Alijonff/e-sign`; выкладка — только push в `main`
-- Документ для переноса на C#: [docs/CSHARP.md](docs/CSHARP.md)
+- Документ для переноса на C# (схема для веб-CRM, DTO, код проверки и вставки): [docs/CSHARP.md](docs/CSHARP.md)
+- Готовый JS-модуль для CRM одним файлом: [crm-module/README.md](crm-module/README.md); проверочная страница на стенде: `/crm-demo/index.html`
 - Справка по планшету и службе signotec: [docs/SIGNOTEC.md](docs/SIGNOTEC.md), [docs/BRIEF.md](docs/BRIEF.md)
 - Выкладка: [docs/DEPLOY.md](docs/DEPLOY.md)
 - Правила разработки и процесс с Codex: [AGENTS.md](AGENTS.md)
@@ -243,6 +244,8 @@ server/src/core/           ядро: геометрия, вставка подп
 server/src/routes/         вход и документы; storage.ts, session.ts, cleanup.ts
 web/src/                   интерфейс: pages/, steps/, mark/, pad/, sign/
 web/public/vendor/         библиотека signotec (STPadServerLib.js)
+web/public/crm-demo/       готовый модуль для CRM (esign-module.js) и проверочная страница
+crm-module/                исходники и описание модуля для CRM
 samples/                   тестовые PDF (вымышленные); генератор в tools/samples/
 tools/pipeline/            конвейер разработки Claude + Codex
 docs/                      бриф, справка по signotec, выкладка, C#, планы
@@ -265,7 +268,7 @@ npm run samples            # пересоздать тестовые PDF в samp
 
 Проверенный путь на Mac без планшета: запустить сервер и сайт, открыть `http://localhost:5173/?pad=mock`, загрузить файл из `samples/`, отметить блоки, подписать в окне mock, скачать результат.
 
-Тесты: 50 серверных (геометрия, вставка подписи, вход, документы, очистка) и 86 веб (разметка блоков, экраны, драйверы с подменой библиотеки signotec).
+Тесты: 50 серверных (геометрия, вставка подписи, вход, документы, очистка), 88 веб (разметка блоков, экраны, драйверы с подменой библиотеки signotec) и 4 теста модуля для CRM.
 
 ---
 

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Модуль подписи для CRM: проверочная страница</title>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; color: #18263b; background: #f4f6fa; }
+    main { max-width: 64rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { margin: 0 0 0.5rem; font-size: 1.5rem; }
+    p.lead { margin: 0 0 1rem; color: #475973; }
+    .bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1rem 0; }
+    button { padding: 0.55rem 0.9rem; border: 1px solid #c4cfdf; border-radius: 0.5rem; background: #fff; font: inherit; cursor: pointer; }
+    button.primary { border-color: #244b96; background: #244b96; color: #fff; }
+    button:disabled { opacity: 0.5; cursor: default; }
+    .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(14rem, 20rem); gap: 1rem; align-items: start; }
+    @media (max-width: 48rem) { .grid { grid-template-columns: minmax(0, 1fr); } }
+    .panel { padding: 0.875rem; border: 1px solid #dce3ed; border-radius: 0.75rem; background: #fff; }
+    .panel h2 { margin: 0 0 0.5rem; font-size: 1rem; }
+    pre { margin: 0; max-height: 16rem; overflow: auto; font-size: 0.75rem; white-space: pre-wrap; word-break: break-word; }
+    #sig { max-width: 100%; border: 1px dashed #9cacc6; background: #fff; }
+    .err { color: #a02038; }
+    .ok { color: #1c6b3a; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Модуль подписи для CRM: проверочная страница</h1>
+  <p class="lead">
+    Выберите PDF, отметьте блоки мышью, затем проверьте планшет и получите подпись.
+    Файл не отправляется никуда: всё выполняется в браузере. Вставку подписи в PDF делает сервер CRM.
+  </p>
+
+  <div class="bar">
+    <input id="file" type="file" accept="application/pdf">
+    <button id="check" type="button">Проверить планшет</button>
+    <button id="sign" type="button" class="primary" disabled>Подписать на планшете</button>
+    <button id="cancel" type="button" disabled>Отменить</button>
+    <button id="clear" type="button">Очистить блоки</button>
+  </div>
+  <p id="status" role="status"></p>
+
+  <div class="grid">
+    <div id="marker"></div>
+    <aside>
+      <div class="panel">
+        <h2>Блоки (то, что уйдёт на сервер)</h2>
+        <pre id="blocks">[]</pre>
+      </div>
+      <div class="panel" style="margin-top: 1rem">
+        <h2>Подпись с планшета</h2>
+        <img id="sig" alt="" hidden>
+        <pre id="siginfo"></pre>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script src="./esign-module.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const status = (text, cls) => { $('status').textContent = text; $('status').className = cls || ''; };
+  let handle = null;
+  let fileName = 'document.pdf';
+  let abort = null;
+
+  function mount(url, name) {
+    if (handle) handle.destroy();
+    fileName = name;
+    $('marker').textContent = '';
+    $('blocks').textContent = '[]';
+    $('sign').disabled = true;
+    handle = ESign.mountMarker($('marker'), {
+      pdfUrl: url,
+      onChange: (blocks) => {
+        $('blocks').textContent = JSON.stringify(blocks, null, 2);
+        $('sign').disabled = blocks.length === 0;
+      },
+      onLoad: (info) => status('Документ открыт: страниц ' + info.pageCount + '. Рисуйте блоки мышью.', 'ok'),
+      onError: (error) => status('Не удалось открыть PDF: ' + error.message, 'err'),
+    });
+  }
+
+  function showError(error) {
+    const d = ESign.describeError(error);
+    status(d.message + ' (' + d.details + ')', 'err');
+  }
+
+  $('file').addEventListener('change', (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (file) mount(URL.createObjectURL(file), file.name);
+  });
+
+  $('clear').addEventListener('click', () => { if (handle) handle.clear(); });
+
+  $('check').addEventListener('click', async () => {
+    status('Подключаюсь к службе и планшету…');
+    const pad = ESign.createPad();
+    try {
+      await pad.connect();
+      status('Планшет найден и открыт. Служба signotec работает.', 'ok');
+    } catch (error) {
+      showError(error);
+    } finally {
+      await pad.disconnect();
+    }
+  });
+
+  $('sign').addEventListener('click', async () => {
+    if (!handle || handle.getBlocks().length === 0) return;
+    abort = new AbortController();
+    $('sign').disabled = true;
+    $('cancel').disabled = false;
+    status('Ждём подпись клиента на планшете…');
+    try {
+      const result = await ESign.captureSignature({ prompt: ESign.buildPrompt(fileName), signal: abort.signal });
+      $('sig').src = 'data:image/png;base64,' + result.imagePngBase64;
+      $('sig').hidden = false;
+      $('siginfo').textContent = 'PNG ' + result.imageWidth + '×' + result.imageHeight + ' px\n' +
+        'SignData: ' + (result.signDataBase64 ? result.signDataBase64.length + ' символов Base64' : 'нет') + '\n' +
+        'Блоков: ' + handle.getBlocks().length;
+      status('Подпись получена. Дальше её вместе с блоками отправляют на сервер CRM.', 'ok');
+    } catch (error) {
+      if (error && error.code === 'cancelled') status('Подпись отменена.');
+      else showError(error);
+    } finally {
+      $('cancel').disabled = true;
+      $('sign').disabled = !handle || handle.getBlocks().length === 0;
+      abort = null;
+    }
+  });
+
+  $('cancel').addEventListener('click', () => { if (abort) abort.abort(); });
+
+  // Для быстрой проверки: ?pdf=/samples/01-dogovor-uslug.pdf
+  const preset = new URLSearchParams(location.search).get('pdf');
+  if (preset) mount(preset, preset.split('/').pop() || 'document.pdf');
+</script>
+</body>
+</html>
