@@ -55,6 +55,11 @@ npm run typecheck && npm run lint && npm test && npm run build
 
 Для задач Codex: `export R=$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies; export PATH="$R/node/bin:$R/bin/fallback:$PATH"`.
 
+## Два сервиса на Railway
+
+- `app` — основной сайт (папки `server/`, `web/`, `shared/`, корневой `Dockerfile`). Пересобирается только при изменениях этих путей (watch patterns).
+- `crm-module` — отдельный стенд модуля для CRM (`crm-module/`, `crm-module/Dockerfile`, статический сервер `crm-module/serve.mjs`). Пересобирается только при изменениях в `crm-module/`. Готовый файл `crm-module/site/esign-module.js` собирается командой `npm run build:module` и **коммитится**: после правок в `web/src/pad/`, `web/src/mark/` или `crm-module/src/` его нужно пересобрать.
+
 ## Выкладка и секреты
 
 Выкладка на хостинг — **только через git** (репозиторий на GitHub, Railway подключён к нему, выкладка = push; не `railway up` с компьютера). `.env`, пароли и ключи в репозиторий не попадают, секреты — в переменных платформы. Создание репозитория на GitHub, подключение Railway и push — **только по слову Ali**. Конвейер ничего не пушит.

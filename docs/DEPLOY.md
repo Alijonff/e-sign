@@ -9,3 +9,13 @@
 5. В разделе Public Networking выберите Generate Domain. После пуша откройте `https://<домен>/health` и проверьте ответ `200` с `{"ok":true}`. На `https://<домен>/` должна открыться страница входа.
 
 Загруженные и подписанные PDF клиентов хранятся на Volume. Сервер удаляет документы старше `RETENTION_DAYS` при запуске и при ежечасной очистке.
+
+## Отдельный сервис для модуля CRM
+
+Проверочная страница и готовый модуль (`crm-module/site/`) выкладываются отдельным сервисом `crm-module` в том же проекте Railway. Он не связан с основным сайтом, не требует пароля и Volume.
+
+1. Новый сервис из того же GitHub-репозитория, ветка `main`.
+2. В настройках сервиса: Dockerfile Path `crm-module/Dockerfile`, Watch Paths `/crm-module/**`, Healthcheck Path `/health`.
+3. Public Networking: Generate Domain. Текущий адрес: <https://crm-module-production.up.railway.app>.
+4. У основного сервиса `app` Watch Paths ограничены путями `/server/**`, `/web/**`, `/shared/**`, `/Dockerfile`, `/package.json`, `/package-lock.json`, `/tsconfig.base.json`, `/railway.json`, `/.dockerignore`, поэтому изменения только в `crm-module/` и `docs/` его не пересобирают.
+5. Файл `crm-module/site/esign-module.js` собирается локально командой `npm run build:module` и коммитится.

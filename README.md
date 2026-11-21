@@ -6,11 +6,12 @@
 
 **Для аналитика, который готовит ТЗ:** этот сайт — демонстрация идеи. Боевая версия будет частью CRM банка на серверах банка, её напишет программист на C#. Начните с [docs/CRM-INTEGRATION.md](docs/CRM-INTEGRATION.md): рамки, роли, архитектура, требования, вопросы к заказчику. Порядок чтения: `CRM-INTEGRATION` → этот README (логика) → [docs/CSHARP.md](docs/CSHARP.md) (геометрия, код на C#, чек-лист) → [docs/SIGNOTEC.md](docs/SIGNOTEC.md) и [docs/BRIEF.md](docs/BRIEF.md) (планшет и служба).
 
-- Сайт-демонстрация (Railway): <https://app-production-c527bf2b.up.railway.app> (пароль выдаёт Ali)
+- Сайт-демонстрация (Railway, сервис `app`): <https://app-production-c527bf2b.up.railway.app> (пароль выдаёт Ali)
+- Стенд модуля для CRM (Railway, отдельный сервис `crm-module`): <https://crm-module-production.up.railway.app>
 - Материалы для ТЗ: [docs/CRM-INTEGRATION.md](docs/CRM-INTEGRATION.md)
 - Репозиторий: приватный, `Alijonff/e-sign`; выкладка — только push в `main`
 - Документ для переноса на C# (схема для веб-CRM, DTO, код проверки и вставки): [docs/CSHARP.md](docs/CSHARP.md)
-- Готовый JS-модуль для CRM одним файлом: [crm-module/README.md](crm-module/README.md); проверочная страница на стенде: `/crm-demo/index.html`
+- Готовый JS-модуль для CRM одним файлом: [crm-module/README.md](crm-module/README.md); проверочная страница на отдельном стенде: <https://crm-module-production.up.railway.app> (пароль не нужен)
 - Справка по планшету и службе signotec: [docs/SIGNOTEC.md](docs/SIGNOTEC.md), [docs/BRIEF.md](docs/BRIEF.md)
 - Выкладка: [docs/DEPLOY.md](docs/DEPLOY.md)
 - Правила разработки и процесс с Codex: [AGENTS.md](AGENTS.md)
