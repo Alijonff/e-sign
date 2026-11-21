@@ -2,7 +2,7 @@
 
 Готовый файл для браузера: **один файл `esign-module.js`**, не зависит от фреймворка CRM. Подключается обычным `<script>` и создаёт глобальный объект `ESign`. Внутри: разметка блоков подписи на страницах PDF (pdf.js), драйвер планшета Evolis Sig100 (signotec Sigma) и вшитая библиотека signotec `STPadServerLib.js` 3.5.0 (лицензия MIT).
 
-Готовый файл лежит здесь: [`web/public/crm-demo/esign-module.js`](../web/public/crm-demo/esign-module.js) (около 2 МБ, 580 КБ в сжатом виде). Проверочная страница: [`web/public/crm-demo/index.html`](../web/public/crm-demo/index.html). На демонстрационном стенде она открывается по адресу `/crm-demo/index.html`.
+Готовый файл лежит здесь: [`crm-module/site/esign-module.js`](site/esign-module.js) (около 2 МБ, 580 КБ в сжатом виде). Проверочная страница: [`crm-module/site/index.html`](site/index.html). На демонстрационном стенде она открывается по адресу `/crm-demo/index.html`.
 
 Что модуль **не** делает: не вставляет подпись в PDF и ничего не отправляет на сервер. Он возвращает блоки и картинку подписи, а вставку в PDF делает сервер CRM (правила и код на C#: [docs/CSHARP.md](../docs/CSHARP.md)).
 
@@ -116,7 +116,7 @@
 
 ```bash
 npm install
-npm run build:module      # создаёт web/public/crm-demo/esign-module.js
+npm run build:module      # создаёт crm-module/site/esign-module.js
 npm run test:module       # тесты хранения блоков
 ```
 

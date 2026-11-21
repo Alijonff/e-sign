@@ -10,7 +10,7 @@
     h1 { margin: 0 0 0.5rem; font-size: 1.5rem; }
     p.lead { margin: 0 0 1rem; color: #475973; }
     .bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1rem 0; }
-    button { padding: 0.55rem 0.9rem; border: 1px solid #c4cfdf; border-radius: 0.5rem; background: #fff; font: inherit; cursor: pointer; }
+    select, button { padding: 0.55rem 0.9rem; border: 1px solid #c4cfdf; border-radius: 0.5rem; background: #fff; font: inherit; cursor: pointer; }
     button.primary { border-color: #244b96; background: #244b96; color: #fff; }
     button:disabled { opacity: 0.5; cursor: default; }
     .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(14rem, 20rem); gap: 1rem; align-items: start; }
@@ -33,6 +33,14 @@
 
   <div class="bar">
     <input id="file" type="file" accept="application/pdf">
+    <select id="sample" aria-label="Пример документа">
+      <option value="">Или выберите пример…</option>
+      <option value="01-dogovor-uslug.pdf">Договор (2 стр.)</option>
+      <option value="02-akt-vypolnennyh-rabot.pdf">Акт (1 стр.)</option>
+      <option value="03-zayavlenie.pdf">Заявление (1 стр.)</option>
+      <option value="04-pravila-obsluzhivaniya-5-stranic.pdf">Правила (5 стр.)</option>
+      <option value="05-letter-s-povernutoy-stranicey.pdf">Letter с повёрнутой страницей</option>
+    </select>
     <button id="check" type="button">Проверить планшет</button>
     <button id="sign" type="button" class="primary" disabled>Подписать на планшете</button>
     <button id="cancel" type="button" disabled>Отменить</button>
@@ -91,6 +99,11 @@
     if (file) mount(URL.createObjectURL(file), file.name);
   });
 
+  $('sample').addEventListener('change', (event) => {
+    const name = event.target.value;
+    if (name) mount('./samples/' + name, name);
+  });
+
   $('clear').addEventListener('click', () => { if (handle) handle.clear(); });
 
   $('check').addEventListener('click', async () => {
@@ -132,7 +145,7 @@
 
   $('cancel').addEventListener('click', () => { if (abort) abort.abort(); });
 
-  // Для быстрой проверки: ?pdf=/samples/01-dogovor-uslug.pdf
+  // Для быстрой проверки: ?pdf=./samples/01-dogovor-uslug.pdf
   const preset = new URLSearchParams(location.search).get('pdf');
   if (preset) mount(preset, preset.split('/').pop() || 'document.pdf');
 </script>

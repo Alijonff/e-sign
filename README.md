@@ -244,7 +244,7 @@ server/src/core/           ядро: геометрия, вставка подп
 server/src/routes/         вход и документы; storage.ts, session.ts, cleanup.ts
 web/src/                   интерфейс: pages/, steps/, mark/, pad/, sign/
 web/public/vendor/         библиотека signotec (STPadServerLib.js)
-web/public/crm-demo/       готовый модуль для CRM (esign-module.js) и проверочная страница
+crm-module/site/       готовый модуль для CRM (esign-module.js) и проверочная страница
 crm-module/                исходники и описание модуля для CRM
 samples/                   тестовые PDF (вымышленные); генератор в tools/samples/
 tools/pipeline/            конвейер разработки Claude + Codex

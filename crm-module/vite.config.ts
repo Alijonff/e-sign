@@ -17,7 +17,7 @@ export default defineConfig({
   },
   build: {
     lib: { entry: resolve(here, 'src/index.ts'), name: 'ESign', formats: ['iife'], fileName: () => 'esign-module.js' },
-    outDir: resolve(here, '../web/public/crm-demo'),
+    outDir: resolve(here, 'site'),
     emptyOutDir: false,
     target: 'es2022',
     cssCodeSplit: false,
